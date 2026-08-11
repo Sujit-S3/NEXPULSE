@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+. "$(dirname "$0")/_/husky.sh"
+
+cd client && npx tsc --noEmit && cd ../server && npx tsc --noEmit
+cd client && npx vitest run --reporter=verbose && cd ../server && npx vitest run --reporter=verbose

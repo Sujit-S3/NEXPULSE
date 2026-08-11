@@ -1,0 +1,42 @@
+{
+  "name": "nexpulse-ai",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "NEXPULSE AI — The Pulse of Every Platform. AI-powered social media analytics.",
+  "scripts": {
+    "install:all": "npm install && npm --prefix client install && npm --prefix server install",
+    "dev": "concurrently -n server,client -c blue,magenta \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "npm --prefix server run dev",
+    "dev:client": "npm --prefix client run dev",
+    "build": "npm --prefix client run build && npm --prefix server run build && npm run build:sdk",
+    "build:client": "npm --prefix client run build",
+    "build:server": "npm --prefix server run build",
+    "lint": "npm --prefix client run lint && npm --prefix server run lint",
+    "lint:fix": "npm --prefix client run lint:fix && npm --prefix server run lint:fix",
+    "typecheck": "npm --prefix client run typecheck && npm --prefix server run typecheck",
+    "config:validate": "npm --prefix server run config:validate",
+    "config:validate:strict": "npm --prefix server run config:validate:strict",
+    "backup:database": "node scripts/backup-database.mjs",
+    "backup:check": "node scripts/backup-database.mjs --check",
+    "brand:verify": "node scripts/verify-brand-assets.mjs",
+    "test": "npm --prefix client run test && npm --prefix server run test && npm run test:sdk-ts && npm run test:sdk-python",
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed",
+    "build:sdk": "npm --prefix server exec -- tsc -p sdks/typescript/tsconfig.json",
+    "test:sdk-ts": "npm run build:sdk && node --test sdks/typescript/tests/sdk.test.mjs",
+    "test:sdk-python": "python -m unittest discover -s sdks/python/tests -p test_*.py",
+    "security:secrets": "node scripts/security-secret-scan.mjs",
+    "security:sast": "node scripts/security-static-scan.mjs",
+    "security:sbom": "node scripts/generate-security-sbom.mjs",
+    "security:container": "node scripts/container-security-check.mjs",
+    "security:dependencies": "node scripts/security-dependency-audit.mjs",
+    "security:scan": "npm run security:secrets && npm run security:sast && npm run security:sbom && npm run security:container && npm run security:dependencies",
+    "clean": "rimraf node_modules client/node_modules server/node_modules"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.0",
+    "concurrently": "^9.2.4",
+    "rimraf": "^6.0.1"
+  }
+}

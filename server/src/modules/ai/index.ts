@@ -1,0 +1,10 @@
+export { aiRoutes } from './routes.js';
+export { aiService } from './aiService.js';
+export { registerProvider, getProvider, getAvailableModels } from './providerAdapter.js';
+export { geminiProvider } from './geminiProvider.js';
+export { openaiProvider } from './openaiProvider.js';
+export { anthropicProvider } from './anthropicProvider.js';
+export { tools } from './toolRegistry.js';
+export { conversationRepository, memoryRepository } from './repository.js';
+export { getPromptTemplate, buildSystemPrompt, buildUserPrompt } from './promptEngine.js';
+export type * from './types.js';

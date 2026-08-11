@@ -1,0 +1,71 @@
+services:
+  - type: web
+    name: nexpulse-api
+    env: node
+    region: oregon
+    plan: starter
+    rootDir: server
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "10000"
+      - key: APP_NAME
+        value: NEXPULSE AI
+      - key: APP_URL
+        sync: false
+      - key: CLIENT_URL
+        sync: false
+      - key: MONGO_URI
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: ENABLE_QUEUES
+        value: "true"
+      - key: JWT_ACCESS_SECRET
+        sync: false
+      - key: JWT_ACCESS_EXPIRES_IN
+        value: 15m
+      - key: COOKIE_SECRET
+        sync: false
+      - key: IDENTITY_ENCRYPTION_KEY
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
+      - key: DEFAULT_AI_PROVIDER
+        value: auto
+      - key: LOG_LEVEL
+        value: info
+      - key: RATE_LIMIT_WINDOW_MS
+        value: "900000"
+      - key: RATE_LIMIT_MAX_REQUESTS
+        value: "100"
+      - key: BCRYPT_ROUNDS
+        value: "12"
+      - key: ENABLE_AI
+        value: "true"
+      - key: ENABLE_PLATFORM_SYNC
+        value: "true"
+      - key: ENABLE_ANALYTICS
+        value: "true"
+      - key: ENABLE_BILLING
+        value: "false"
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+      - key: RAZORPAY_WEBHOOK_SECRET
+        sync: false
+      - key: RAZORPAY_PROFESSIONAL_MONTHLY_PLAN_ID
+        sync: false
+      - key: RAZORPAY_PROFESSIONAL_ANNUAL_PLAN_ID
+        sync: false
+      - key: RAZORPAY_CURRENCY
+        value: INR
+      - key: RAZORPAY_PROFESSIONAL_MONTHLY_PRICE_MINOR
+        value: "399900"
+      - key: RAZORPAY_PROFESSIONAL_ANNUAL_PRICE_MINOR
+        value: "3838800"

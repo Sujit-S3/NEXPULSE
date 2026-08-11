@@ -1,0 +1,190 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  NODE_VERSION: "22"
+
+jobs:
+  lint-typecheck:
+    name: Lint & TypeCheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+          cache-dependency-path: |
+            client/package-lock.json
+            server/package-lock.json
+      - name: Install client dependencies
+        working-directory: client
+        run: npm ci --ignore-scripts
+      - name: Install server dependencies
+        working-directory: server
+        run: npm ci --ignore-scripts
+      - name: Lint client
+        working-directory: client
+        run: npm run lint
+      - name: TypeCheck client
+        working-directory: client
+        run: npm run typecheck
+      - name: Lint server
+        working-directory: server
+        run: npm run lint
+      - name: TypeCheck server
+        working-directory: server
+        run: npm run typecheck
+      - name: Validate runtime configuration contract
+        working-directory: server
+        env:
+          NODE_ENV: test
+          JWT_ACCESS_SECRET: ci_only_access_secret_000000000000000000000000000000000000
+          COOKIE_SECRET: ci_only_cookie_secret_000000000000000000000000000000000000
+          ENABLE_AI: "false"
+          ENABLE_PLATFORM_SYNC: "false"
+        run: npm run config:validate
+      - name: Verify canonical brand assets
+        run: npm run brand:verify
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+          cache-dependency-path: |
+            client/package-lock.json
+            server/package-lock.json
+      - name: Install client dependencies
+        working-directory: client
+        run: npm ci --ignore-scripts
+      - name: Install server dependencies
+        working-directory: server
+        run: npm ci --ignore-scripts
+      - name: Run client tests
+        working-directory: client
+        run: npm test
+      - name: Run server tests
+        working-directory: server
+        run: npm test
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+          cache-dependency-path: |
+            client/package-lock.json
+            server/package-lock.json
+      - name: Install client dependencies
+        working-directory: client
+        run: npm ci --ignore-scripts
+      - name: Install server dependencies
+        working-directory: server
+        run: npm ci --ignore-scripts
+      - name: Build client
+        working-directory: client
+        run: npm run build
+      - name: Build server
+        working-directory: server
+        run: npm run build
+      - name: Upload client artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: client/dist
+      - name: Upload server artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: server-dist
+          path: server/dist
+
+  e2e:
+    name: Browser E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+          cache-dependency-path: |
+            package-lock.json
+            client/package-lock.json
+      - name: Install test runner
+        run: npm ci --ignore-scripts
+      - name: Install client dependencies
+        working-directory: client
+        run: npm ci --ignore-scripts
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run browser acceptance tests
+        run: npm run test:e2e
+      - name: Upload browser diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-diagnostics
+          path: artifacts/playwright-*
+          if-no-files-found: ignore
+          retention-days: 14
+
+  security:
+    name: DevSecOps Gates
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Secret, static, license, SBOM, and container-policy scans
+        run: |
+          npm run security:secrets
+          npm run security:sast
+          npm run security:sbom
+          npm run security:container
+      - name: Production dependency audit
+        run: npm run security:dependencies
+      - name: Upload CycloneDX SBOM
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexpulse-cyclonedx-sbom
+          path: artifacts/nexpulse-sbom.cdx.json
+          retention-days: 90
+      - name: Build production images
+        run: |
+          docker build --target server -t nexpulse-server:${{ github.sha }} .
+          docker build --target client -t nexpulse-client:${{ github.sha }} .
+      - name: Scan server image for high and critical vulnerabilities
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: nexpulse-server:${{ github.sha }}
+          format: table
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
+      - name: Scan client image for high and critical vulnerabilities
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: nexpulse-client:${{ github.sha }}
+          format: table
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
+          skip-setup-trivy: true

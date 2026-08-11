@@ -1,0 +1,190 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4096 4096" width="4096" height="4096" fill="none">
+  <defs>
+    <!-- Internal 3D Shadow for N and Analytics Bars (No shadows outside logo!) -->
+    <filter id="internal3DShadowLight" x="-20%" y="-20%" width="140%" height="140%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="35" stdDeviation="30" flood-color="#0F172A" flood-opacity="0.38" />
+      <feDropShadow dx="0" dy="10" stdDeviation="15" flood-color="#1E293B" flood-opacity="0.25" />
+    </filter>
+
+    <filter id="barGlowInternalLight" x="-30%" y="-30%" width="160%" height="160%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="25" stdDeviation="25" flood-color="#2563EB" flood-opacity="0.45" />
+    </filter>
+
+    <!-- Chrome Metallic Outer Frame Gradients -->
+    <linearGradient id="chromeFrameLight" x1="500" y1="500" x2="3600" y2="3600" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="15%" stop-color="#E2E8F0" />
+      <stop offset="30%" stop-color="#94A3B8" />
+      <stop offset="48%" stop-color="#FFFFFF" />
+      <stop offset="65%" stop-color="#64748B" />
+      <stop offset="82%" stop-color="#CBD5E1" />
+      <stop offset="92%" stop-color="#F8FAFC" />
+      <stop offset="100%" stop-color="#FFFFFF" />
+    </linearGradient>
+
+    <!-- Soft Blue Reflections along bottom/right rim -->
+    <linearGradient id="blueEdgeLight" x1="1000" y1="800" x2="3700" y2="3700" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38BDF8" stop-opacity="0" />
+      <stop offset="40%" stop-color="#38BDF8" stop-opacity="0" />
+      <stop offset="60%" stop-color="#38BDF8" stop-opacity="0.85" />
+      <stop offset="80%" stop-color="#3B82F6" stop-opacity="0.95" />
+      <stop offset="100%" stop-color="#00F0FF" stop-opacity="1" />
+    </linearGradient>
+
+    <!-- Inside Speech Bubble: Frosted White / Pearl Glass Interior -->
+    <linearGradient id="bubbleCavityLight" x1="800" y1="600" x2="3400" y2="3000" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="35%" stop-color="#F8FAFC" />
+      <stop offset="65%" stop-color="#F1F5F9" />
+      <stop offset="85%" stop-color="#E2E8F0" />
+      <stop offset="100%" stop-color="#CBD5E1" />
+    </linearGradient>
+
+    <!-- Minimal Violet Accent -->
+    <radialGradient id="violetInternalLight" cx="70%" cy="75%" r="45%" fx="70%" fy="75%" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#A855F7" stop-opacity="0.28" />
+      <stop offset="55%" stop-color="#8B5CF6" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Metallic Letter N Gradients (Silver Chrome -> Sapphire Blue base) -->
+    <linearGradient id="metallicNGradLight" x1="1150" y1="1400" x2="2300" y2="2800" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="25%" stop-color="#E2E8F0" />
+      <stop offset="50%" stop-color="#94A3B8" />
+      <stop offset="70%" stop-color="#F8FAFC" />
+      <stop offset="85%" stop-color="#60A5FA" />
+      <stop offset="100%" stop-color="#3B82F6" />
+    </linearGradient>
+
+    <!-- Three Metallic Analytics Bars Gradients -->
+    <linearGradient id="bar1GradLight" x1="0" y1="2250" x2="0" y2="2800" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#00F0FF" />
+      <stop offset="50%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#2563EB" />
+    </linearGradient>
+
+    <linearGradient id="bar2GradLight" x1="0" y1="1825" x2="0" y2="2800" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#60A5FA" />
+      <stop offset="60%" stop-color="#3B82F6" />
+      <stop offset="100%" stop-color="#1D4ED8" />
+    </linearGradient>
+
+    <linearGradient id="bar3GradLight" x1="0" y1="1400" x2="0" y2="2800" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#C084FC" />
+      <stop offset="30%" stop-color="#8B5CF6" />
+      <stop offset="70%" stop-color="#4F46E5" />
+      <stop offset="100%" stop-color="#2563EB" />
+    </linearGradient>
+
+    <!-- Optical Glass Sheen -->
+    <linearGradient id="glassSheenLight" x1="1000" y1="800" x2="3400" y2="2400" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.75" />
+      <stop offset="35%" stop-color="#FFFFFF" stop-opacity="0.30" />
+      <stop offset="60%" stop-color="#FFFFFF" stop-opacity="0" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
+    </linearGradient>
+
+    <path id="speechBubblePath" d="
+      M 1288 813
+      H 3188
+      A 760 760 0 0 1 3948 1573
+      V 2713
+      A 760 760 0 0 1 3188 3473
+      H 1668
+      L 970 3996
+      A 80 80 0 0 1 850 3930
+      L 1288 3473
+      A 760 760 0 0 1 528 2713
+      V 1573
+      A 760 760 0 0 1 1288 813
+      Z" />
+  </defs>
+
+  <!-- ========================================== -->
+  <!-- BRAND LOGO LIGHT (NO EXTERNAL SHADOW/TEXT) -->
+  <!-- ========================================== -->
+  <g id="logoRootLight">
+    <!-- 1. Inside Speech Bubble: Frosted White / Pearl Glass Interior -->
+    <use href="#speechBubblePath" fill="url(#bubbleCavityLight)" />
+    <use href="#speechBubblePath" fill="url(#violetInternalLight)" />
+
+    <!-- 2. Bright Silver Chrome Outer Rim Border -->
+    <use href="#speechBubblePath" stroke="url(#chromeFrameLight)" stroke-width="220" stroke-linejoin="round" />
+
+    <!-- 3. Soft Blue Reflections along Bottom & Right Rim -->
+    <use href="#speechBubblePath" stroke="url(#blueEdgeLight)" stroke-width="220" stroke-linejoin="round" opacity="0.95" />
+
+    <!-- 4. Precision Chrome Bevel Separation Lines -->
+    <use href="#speechBubblePath" stroke="#FFFFFF" stroke-width="20" stroke-linejoin="round" opacity="0.85" />
+    <use href="#speechBubblePath" transform="scale(0.94) translate(130, 110)" stroke="#1E293B" stroke-width="30" stroke-linejoin="round" opacity="0.35" fill="none" />
+    <use href="#speechBubblePath" transform="scale(0.94) translate(130, 110)" stroke="#FFFFFF" stroke-width="12" stroke-linejoin="round" opacity="0.65" fill="none" />
+
+    <!-- ========================================== -->
+    <!-- INSIDE THE CAVITY: METALLIC N & BARS       -->
+    <!-- ========================================== -->
+    <g id="internalComponentsLight" filter="url(#internal3DShadowLight)">
+      <!-- A. 3D Sculpted Metallic Letter N -->
+      <path d="
+        M 1150 2800
+        V 1400
+        H 1450
+        L 2000 2350
+        V 1400
+        H 2300
+        V 2800
+        H 2000
+        L 1450 1850
+        V 2800
+        H 1150
+        Z"
+        fill="url(#metallicNGradLight)"
+        stroke="rgba(255, 255, 255, 0.9)"
+        stroke-width="14"
+        stroke-linejoin="round" />
+      
+      <!-- Subtle Violet & Sapphire Reflection inside Letter N base -->
+      <path d="
+        M 1150 2680 V 2800 H 1450 V 2680 Z
+        M 2000 2680 V 2800 H 2300 V 2680 Z"
+        fill="#00F0FF"
+        opacity="0.25" />
+
+      <!-- B. Three Metallic Analytics Bars -->
+      <g filter="url(#barGlowInternalLight)">
+        <rect x="2420" y="2250" width="240" height="550" rx="120" fill="url(#bar1GradLight)" stroke="rgba(255, 255, 255, 0.7)" stroke-width="10" />
+        <rect x="2460" y="2275" width="160" height="65" rx="32" fill="#FFFFFF" opacity="0.75" />
+
+        <rect x="2750" y="1825" width="240" height="975" rx="120" fill="url(#bar2GradLight)" stroke="rgba(255, 255, 255, 0.7)" stroke-width="10" />
+        <rect x="2790" y="1850" width="160" height="65" rx="32" fill="#FFFFFF" opacity="0.75" />
+
+        <rect x="3080" y="1400" width="240" height="1400" rx="120" fill="url(#bar3GradLight)" stroke="rgba(255, 255, 255, 0.8)" stroke-width="10" />
+        <rect x="3120" y="1425" width="160" height="65" rx="32" fill="#FFFFFF" opacity="0.85" />
+      </g>
+    </g>
+
+    <!-- 5. Optical Glass Sheen across upper cavity -->
+    <path d="
+      M 1288 813
+      H 3188
+      A 760 760 0 0 1 3948 1573
+      C 3700 1850, 2800 2000, 1400 1800
+      C 950 1730, 650 1500, 528 1573
+      A 760 760 0 0 1 1288 813
+      Z"
+      fill="url(#glassSheenLight)"
+      pointer-events="none" />
+
+    <!-- Top Left Chrome Rim Specular Highlight Streak -->
+    <path d="
+      M 1150 840
+      H 2600
+      C 1900 840, 1000 950, 650 1500"
+      stroke="#FFFFFF"
+      stroke-width="26"
+      stroke-linecap="round"
+      opacity="0.85"
+      fill="none"
+      pointer-events="none" />
+  </g>
+</svg>

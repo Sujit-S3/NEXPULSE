@@ -1,0 +1,24 @@
+{
+  "name": "NEXPULSE AI",
+  "short_name": "NEXPULSE",
+  "description": "The Pulse of Every Platform. Premium social intelligence, analytics, AI insights, and reporting.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/branding/main-dark.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/branding/ai-assistant.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

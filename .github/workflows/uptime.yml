@@ -1,0 +1,49 @@
+name: Production Uptime
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-uptime
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    name: Health and readiness probes
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      UPTIME_URL: ${{ secrets.UPTIME_URL }}
+      ALERT_WEBHOOK_URL: ${{ secrets.ALERT_WEBHOOK_URL }}
+    steps:
+      - name: Validate probe configuration
+        shell: bash
+        run: |
+          if [ -z "$UPTIME_URL" ]; then
+            echo "::error::UPTIME_URL repository secret is required"
+            exit 1
+          fi
+
+      - name: Probe liveness and readiness
+        shell: bash
+        run: |
+          base="${UPTIME_URL%/}"
+          curl --fail --silent --show-error --max-time 15 --retry 2 "$base/api/v1/health" >/dev/null
+          curl --fail --silent --show-error --max-time 15 --retry 2 "$base/api/v1/ready" >/dev/null
+
+      - name: Send failure alert
+        if: failure()
+        shell: bash
+        run: |
+          if [ -z "$ALERT_WEBHOOK_URL" ]; then
+            exit 0
+          fi
+          curl --fail --silent --show-error --max-time 10 \
+            -H "Content-Type: application/json" \
+            -d "{\"service\":\"NEXPULSE AI\",\"state\":\"uptime_probe_failed\",\"workflow\":\"${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\"}" \
+            "$ALERT_WEBHOOK_URL"

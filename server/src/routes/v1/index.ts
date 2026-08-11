@@ -1,0 +1,40 @@
+import { Router } from 'express';
+import { healthRoutes } from './health.routes.js';
+import { readyRoutes } from './ready.routes.js';
+import { authRoutes } from '../../modules/auth/routes.js';
+import { platformRoutes } from '../../modules/platforms/routes.js';
+import { aiRoutes } from '../../modules/ai/routes.js';
+import { analyticsRoutes } from '../../modules/analytics/routes.js';
+import { dashboardRoutes } from '../../modules/dashboard/routes.js';
+import { reportRoutes } from '../../modules/reports/routes.js';
+import { notificationRoutes } from '../../modules/notifications/routes.js';
+import { settingsRoutes } from '../../modules/settings/routes.js';
+import { workspaceRoutes } from '../../modules/workspaces/routes.js';
+import { identityRoutes } from '../../modules/identity/routes.js';
+import { apiLimiter } from '../../middleware/rateLimiter.js';
+import { developerOAuthRoutes, developerRoutes } from '../../modules/developer/routes.js';
+import { publicResourceRoutes } from '../../modules/developer/publicResources.js';
+import { securityRoutes } from '../../modules/security/routes.js';
+import { billingRoutes } from '../../modules/billing/routes.js';
+
+const router = Router();
+
+router.use('/health', healthRoutes);
+router.use('/ready', readyRoutes);
+router.use('/oauth', developerOAuthRoutes);
+router.use(publicResourceRoutes);
+router.use('/auth', authRoutes);
+router.use('/platforms', apiLimiter, platformRoutes);
+router.use('/ai', apiLimiter, aiRoutes);
+router.use('/analytics', apiLimiter, analyticsRoutes);
+router.use('/dashboard', apiLimiter, dashboardRoutes);
+router.use('/reports', apiLimiter, reportRoutes);
+router.use('/notifications', apiLimiter, notificationRoutes);
+router.use('/settings', apiLimiter, settingsRoutes);
+router.use('/workspaces', apiLimiter, workspaceRoutes);
+router.use('/identity', apiLimiter, identityRoutes);
+router.use('/developer', apiLimiter, developerRoutes);
+router.use('/security', apiLimiter, securityRoutes);
+router.use('/billing', billingRoutes);
+
+export { router as v1Routes };

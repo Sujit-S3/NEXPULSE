@@ -1,0 +1,94 @@
+services:
+  mongodb:
+    image: mongo:7
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: nexpulse
+    healthcheck:
+      test: mongosh --quiet --eval "try { rs.status().ok } catch (error) { rs.initiate({_id:'rs0',members:[{_id:0,host:'mongodb:27017'}]}).ok }"
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: redis-cli ping
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: server
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      APP_URL: http://localhost:4000
+      CLIENT_URL: http://localhost
+      MONGO_URI: mongodb://mongodb:27017/nexpulse?replicaSet=rs0
+      REDIS_URL: redis://redis:6379
+      ENABLE_QUEUES: ${ENABLE_QUEUES:-true}
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
+      JWT_ACCESS_EXPIRES_IN: 15m
+      CORS_ORIGIN: http://localhost
+      COOKIE_SECRET: ${COOKIE_SECRET}
+      IDENTITY_ENCRYPTION_KEY: ${IDENTITY_ENCRYPTION_KEY}
+      OAUTH_TOKEN_ENCRYPTION_KEY: ${OAUTH_TOKEN_ENCRYPTION_KEY}
+      META_CLIENT_ID: ${META_CLIENT_ID}
+      META_CLIENT_SECRET: ${META_CLIENT_SECRET}
+      LINKEDIN_CLIENT_ID: ${LINKEDIN_CLIENT_ID}
+      LINKEDIN_CLIENT_SECRET: ${LINKEDIN_CLIENT_SECRET}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      TIKTOK_CLIENT_KEY: ${TIKTOK_CLIENT_KEY}
+      TIKTOK_CLIENT_SECRET: ${TIKTOK_CLIENT_SECRET}
+      PINTEREST_CLIENT_ID: ${PINTEREST_CLIENT_ID}
+      PINTEREST_CLIENT_SECRET: ${PINTEREST_CLIENT_SECRET}
+      X_CLIENT_ID: ${X_CLIENT_ID}
+      X_CLIENT_SECRET: ${X_CLIENT_SECRET}
+      ENABLE_BILLING: ${ENABLE_BILLING:-false}
+      RAZORPAY_KEY_ID: ${RAZORPAY_KEY_ID}
+      RAZORPAY_KEY_SECRET: ${RAZORPAY_KEY_SECRET}
+      RAZORPAY_WEBHOOK_SECRET: ${RAZORPAY_WEBHOOK_SECRET}
+      RAZORPAY_PROFESSIONAL_MONTHLY_PLAN_ID: ${RAZORPAY_PROFESSIONAL_MONTHLY_PLAN_ID}
+      RAZORPAY_PROFESSIONAL_ANNUAL_PLAN_ID: ${RAZORPAY_PROFESSIONAL_ANNUAL_PLAN_ID}
+      RAZORPAY_CURRENCY: ${RAZORPAY_CURRENCY:-INR}
+      RAZORPAY_PROFESSIONAL_MONTHLY_PRICE_MINOR: ${RAZORPAY_PROFESSIONAL_MONTHLY_PRICE_MINOR:-399900}
+      RAZORPAY_PROFESSIONAL_ANNUAL_PRICE_MINOR: ${RAZORPAY_PROFESSIONAL_ANNUAL_PRICE_MINOR:-3838800}
+      LOG_LEVEL: info
+
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: client
+    restart: unless-stopped
+    ports:
+      - "80:8080"
+    depends_on:
+      - server
+
+volumes:
+  mongodb_data:
+  redis_data:

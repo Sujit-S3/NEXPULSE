@@ -1,0 +1,47 @@
+name: Encrypted Database Backup
+
+on:
+  schedule:
+    - cron: "20 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-database-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    name: MongoDB encrypted archive
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      MONGO_BACKUP_URI: ${{ secrets.MONGO_BACKUP_URI }}
+      BACKUP_ENCRYPTION_PASSPHRASE: ${{ secrets.BACKUP_ENCRYPTION_PASSPHRASE }}
+      BACKUP_RETENTION_DAYS: "14"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install MongoDB database tools
+        shell: bash
+        run: |
+          curl -fsSL https://pgp.mongodb.com/server-8.0.asc | sudo gpg --dearmor -o /usr/share/keyrings/mongodb-server-8.0.gpg
+          echo "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/8.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list
+          sudo apt-get update
+          sudo apt-get install -y mongodb-database-tools
+
+      - name: Validate backup prerequisites
+        run: node scripts/backup-database.mjs --check
+
+      - name: Create encrypted backup
+        run: node scripts/backup-database.mjs
+
+      - name: Upload encrypted backup
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexpulse-mongodb-backup-${{ github.run_id }}
+          path: artifacts/backups/*.enc
+          if-no-files-found: error
+          retention-days: 14
