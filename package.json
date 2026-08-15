@@ -32,6 +32,7 @@
     "security:container": "node scripts/container-security-check.mjs",
     "security:dependencies": "node scripts/security-dependency-audit.mjs",
     "security:scan": "npm run security:secrets && npm run security:sast && npm run security:sbom && npm run security:container && npm run security:dependencies",
+    "deploy:check": "node scripts/deploy-preflight-check.mjs",
     "clean": "rimraf node_modules client/node_modules server/node_modules"
   },
   "devDependencies": {
