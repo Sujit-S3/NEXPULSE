@@ -41,7 +41,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const refreshAuth = useCallback(async (): Promise<void> => {
+  const refreshAuth = useCallback(async (isStale?: () => boolean): Promise<void> => {
     try {
       const baseURL = import.meta.env["VITE_API_URL"] ?? "http://localhost:4000";
       const { data } = await axios.post(
@@ -49,10 +49,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         {},
         { withCredentials: true },
       );
+      if (isStale?.()) return;
       const { user: userData, accessToken } = data.data;
       setAccessToken(accessToken);
       setUser(userData);
     } catch {
+      if (isStale?.()) return;
       setAccessToken(null);
       setUser(null);
     }
@@ -63,8 +65,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsLoading(false);
       return;
     }
+    let stale = false;
     setIsLoading(true);
-    refreshAuth().finally(() => setIsLoading(false));
+    refreshAuth(() => stale).finally(() => {
+      if (!stale) setIsLoading(false);
+    });
+    return () => {
+      stale = true;
+    };
   }, [location.pathname, refreshAuth]);
 
   const login = useCallback(

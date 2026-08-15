@@ -47,8 +47,44 @@ services:
         value: "12"
       - key: ENABLE_AI
         value: "true"
+      # AI provider keys — at least one MUST be set in the Render dashboard
+      # when ENABLE_AI is true (superRefine will call process.exit(1) otherwise)
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
       - key: ENABLE_PLATFORM_SYNC
         value: "true"
+      # Platform sync secrets — OAUTH_TOKEN_ENCRYPTION_KEY plus at least one
+      # complete provider ID/Secret pair MUST be set when ENABLE_PLATFORM_SYNC is true
+      - key: OAUTH_TOKEN_ENCRYPTION_KEY
+        sync: false
+      - key: META_CLIENT_ID
+        sync: false
+      - key: META_CLIENT_SECRET
+        sync: false
+      - key: LINKEDIN_CLIENT_ID
+        sync: false
+      - key: LINKEDIN_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: TIKTOK_CLIENT_KEY
+        sync: false
+      - key: TIKTOK_CLIENT_SECRET
+        sync: false
+      - key: PINTEREST_CLIENT_ID
+        sync: false
+      - key: PINTEREST_CLIENT_SECRET
+        sync: false
+      - key: X_CLIENT_ID
+        sync: false
+      - key: X_CLIENT_SECRET
+        sync: false
       - key: ENABLE_ANALYTICS
         value: "true"
       - key: ENABLE_BILLING

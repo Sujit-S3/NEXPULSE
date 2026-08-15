@@ -12,18 +12,30 @@ async function activeWorkspaceIds(since: Date): Promise<string[]> {
   return values.map(String).filter((value) => /^[a-f\d]{24}$/i.test(value));
 }
 
+async function runPerWorkspace(
+  label: string,
+  workspaces: string[],
+  run: (workspaceId: string) => Promise<unknown>,
+): Promise<void> {
+  const results = await Promise.allSettled(workspaces.map((workspaceId) => run(workspaceId)));
+  results.forEach((result, index) => {
+    if (result.status === 'rejected') {
+      logger.error(`${label} failed for workspace`, {
+        workspaceId: workspaces[index],
+        error: result.reason instanceof Error ? result.reason.message : String(result.reason),
+      });
+    }
+  });
+}
+
 async function evaluateThreats(): Promise<void> {
   const workspaces = await activeWorkspaceIds(new Date(Date.now() - 24 * 60 * 60_000));
-  for (const workspaceId of workspaces) {
-    await threatService.evaluate(workspaceId);
-  }
+  await runPerWorkspace('Threat evaluation', workspaces, (workspaceId) => threatService.evaluate(workspaceId));
 }
 
 async function collectCompliance(): Promise<void> {
   const workspaces = await activeWorkspaceIds(new Date(Date.now() - 30 * 24 * 60 * 60_000));
-  for (const workspaceId of workspaces) {
-    await complianceService.collect(workspaceId);
-  }
+  await runPerWorkspace('Compliance collection', workspaces, (workspaceId) => complianceService.collect(workspaceId));
 }
 
 export async function processSecurityJob(job: Job): Promise<void> {

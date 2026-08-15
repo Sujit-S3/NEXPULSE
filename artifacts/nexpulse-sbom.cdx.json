@@ -1,10 +1,10 @@
 {
   "bomFormat": "CycloneDX",
   "specVersion": "1.5",
-  "serialNumber": "urn:uuid:6eb6b54c-a73c-43b9-b0c8-c08d91acf247",
+  "serialNumber": "urn:uuid:446b970f-6ff5-437f-a776-13b12e456cf4",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-08-06T13:30:41.221Z",
+    "timestamp": "2026-08-15T10:06:10.802Z",
     "tools": [
       {
         "vendor": "NEXPULSE",

@@ -209,13 +209,14 @@ async function claimWebhook(
       throw new AuthorizationError('Webhook event identifier does not match its original payload');
     }
     if (existing.status !== 'failed') return { duplicate: true };
-    await BillingWebhookEvent.updateOne(
+    const reclaim = await BillingWebhookEvent.updateOne(
       { _id: existing._id, status: 'failed' },
       {
         $set: { status: 'processing', eventName, lastError: undefined },
         $inc: { attempts: 1 },
       },
     ).exec();
+    if (reclaim.matchedCount === 0) return { duplicate: true };
     return { duplicate: false };
   }
 }
