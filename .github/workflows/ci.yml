@@ -75,6 +75,9 @@ jobs:
         run: npm test
       - name: Run server tests
         working-directory: server
+        env:
+          JWT_ACCESS_SECRET: ci_only_access_secret_000000000000000000000000000000000000
+          COOKIE_SECRET: ci_only_cookie_secret_000000000000000000000000000000000000
         run: npm test
 
   build:
